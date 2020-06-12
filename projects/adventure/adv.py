@@ -29,6 +29,30 @@ player = Player(world.starting_room)
 # traversal_path = ['n', 'n']
 traversal_path = []
 
+visited = {}
+reverse_path = []
+opposite_direction = {'n': 's', 'e': 'w', 's': 'n', 'w': 'e'}
+
+visited[player.current_room.id] = player.current_room.get_exits()
+
+while len(visited) < len(room_graph):
+    if player.current_room.id not in visited:
+        visited[player.current_room.id] = player.current_room.get_exits()
+        prev_direction = reverse_path[-1]
+        visited[player.current_room.id].remove(prev_direction)
+    
+    if len(visited[player.current_room.id]) == 0:
+        prev_direction = reverse_path[-1]
+        reverse_path.pop()
+        traversal_path.append(prev_direction)
+        player.travel(prev_direction)
+    
+    else:
+        direction = visited[player.current_room.id][-1]
+        visited[player.current_room.id].pop()
+        traversal_path.append(direction)
+        reverse_path.append(opposite_direction[direction])
+        player.travel(direction)
 
 
 # TRAVERSAL TEST
@@ -51,12 +75,12 @@ else:
 #######
 # UNCOMMENT TO WALK AROUND
 #######
-player.current_room.print_room_description(player)
-while True:
-    cmds = input("-> ").lower().split(" ")
-    if cmds[0] in ["n", "s", "e", "w"]:
-        player.travel(cmds[0], True)
-    elif cmds[0] == "q":
-        break
-    else:
-        print("I did not understand that command.")
+# player.current_room.print_room_description(player)
+# while True:
+#     cmds = input("-> ").lower().split(" ")
+#     if cmds[0] in ["n", "s", "e", "w"]:
+#         player.travel(cmds[0], True)
+#     elif cmds[0] == "q":
+#         break
+#     else:
+#         print("I did not understand that command.")
