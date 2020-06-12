@@ -29,30 +29,30 @@ player = Player(world.starting_room)
 # traversal_path = ['n', 'n']
 traversal_path = []
 
-visited = {}
-reverse_path = []
-opposite_direction = {'n': 's', 'e': 'w', 's': 'n', 'w': 'e'}
+visited = {} # added visited dictionary
+reverse_path = [] # added reverse path for storing the backtracking
+opposite_direction = {'n': 's', 'e': 'w', 's': 'n', 'w': 'e'}  #added opposite directions for backtracking 
 
-visited[player.current_room.id] = player.current_room.get_exits()
+visited[player.current_room.id] = player.current_room.get_exits() # added the first room to the visited dictionary and get its exits 
 
-while len(visited) < len(room_graph):
-    if player.current_room.id not in visited:
-        visited[player.current_room.id] = player.current_room.get_exits()
+while len(visited) < len(room_graph):  # while the visited list is less than the length of rooms in the graph 
+    if player.current_room.id not in visited: # if not visited 
+        visited[player.current_room.id] = player.current_room.get_exits() # add it to the visited and get the rooms 
         prev_direction = reverse_path[-1]
-        visited[player.current_room.id].remove(prev_direction)
+        visited[player.current_room.id].remove(prev_direction)# access direction just visited and remove it from the unexplored paths/ we have came from that direction 
     
-    if len(visited[player.current_room.id]) == 0:
-        prev_direction = reverse_path[-1]
-        reverse_path.pop()
-        traversal_path.append(prev_direction)
-        player.travel(prev_direction)
+    if len(visited[player.current_room.id]) == 0: # if the length of the paths associated with the room is 0 when all the paths have been explored
+        prev_direction = reverse_path[-1] # backtracking to the previous room until a room with unexplored path is found 
+        reverse_path.pop() # assign the last addition to the reverse path as the previous direction and pop it from reverse path
+        traversal_path.append(prev_direction)  # adding the previous direction to the traversal path 
+        player.travel(prev_direction) # moves the player into that direction
     
-    else:
-        direction = visited[player.current_room.id][-1]
-        visited[player.current_room.id].pop()
-        traversal_path.append(direction)
-        reverse_path.append(opposite_direction[direction])
-        player.travel(direction)
+    else: # else if there is an unexplored direction/ add the direction to the traversal path/ explore new room
+        direction = visited[player.current_room.id][-1] # the first available direction in the room, assign it to direction and pop it from the list
+        visited[player.current_room.id].pop()  
+        traversal_path.append(direction) # add the direction to the traversal path
+        reverse_path.append(opposite_direction[direction]) # record the opposite direction to the move in the reverse path
+        player.travel(direction) # move the player in that direction
 
 
 # TRAVERSAL TEST
